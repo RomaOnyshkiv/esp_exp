@@ -20,7 +20,6 @@ class ConfigReader:
             with open(path) as env_file:
                 line_number = 0
                 while True:
-                    # readline() замість read(): не тримаємо весь файл у RAM
                     raw_line = env_file.readline()
                     if not raw_line:
                         break

@@ -29,10 +29,8 @@ def parse_line(raw_line, line_number):
 
 
 def _clean_value(value):
-    # Значення в лапках беремо як є (разом з # всередині, напр. паролі).
     if len(value) >= 2 and value[0] in QUOTE_CHARS and value[-1] == value[0]:
         return value[1:-1]
-    # Для значень без лапок відрізаємо inline-коментар: KEY=value  # comment
     marker_index = value.find(INLINE_COMMENT_MARKER)
     if marker_index != -1:
         value = value[:marker_index]
