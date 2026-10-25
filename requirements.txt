@@ -1,0 +1,8 @@
+esptool
+mpremote
+adafruit-ampy
+requests
+pyyaml>=6.0
+pyserial
+network
+adafruit-circuitpython-framebuf
