@@ -10,11 +10,12 @@ class DispServer:
         self._sock = None
 
     def start(self):
+        port = conf_reader.get_int("SERVER_PORT", 8080)
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._sock.bind(("0.0.0.0", conf_reader.get("SERVER_PORT")))
+        self._sock.bind(("0.0.0.0", port))
         self._sock.listen(1)
-        print("Server: listening on port", conf_reader.get("SERVER_PORT"))
+        print("Server: listening on port", port)
 
         while True:
             client = None
@@ -64,7 +65,7 @@ class DispServer:
 
         info = data.get("info")
         if info is None:
-            self._respond(client, 400, "Missing 'status' field")
+            self._respond(client, 400, "Missing 'info' field")
             return
 
         ok = self._disp.show_time(info)

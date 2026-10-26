@@ -1,8 +1,11 @@
-.PHONY: install flash reset getpid offscreen restart
+.PHONY: install flash reset getpid offscreen restart wokwi-upload wokwi wokwi-health wokwi-message
 
 VENV     := .venv
 PYTHON   := $(VENV)/bin/python
 PIP      := $(VENV)/bin/pip
+WOKWI_PORT ?= port:rfc2217://localhost:4000
+WOKWI_HTTP_URL ?= http://localhost:9080
+WOKWI_MESSAGE ?= Hello from terminal
 ESP_PORT ?= /dev/tty.usbserial-0001
 CHIP	 := esp32
 BAUD	 := 115200
@@ -56,3 +59,17 @@ offscreen:
 	screen -S $(PID) -X quit
 
 restart: clear flash reset
+
+wokwi-upload: install
+	$(PYTHON) -m mpremote connect $(WOKWI_PORT) fs cp -r config : + fs cp -r controller : + fs cp -r lbs : + fs cp -r server : + fs cp main.py :main.py + fs cp .env.example :.env
+
+wokwi: wokwi-upload
+	$(PYTHON) -m mpremote connect $(WOKWI_PORT) run main.py
+
+wokwi-health:
+	curl --fail --show-error "$(WOKWI_HTTP_URL)/health"
+
+wokwi-message:
+	curl --fail --show-error -X POST "$(WOKWI_HTTP_URL)/msg" \
+		-H "Content-Type: application/json" \
+		--data '{"info":"$(WOKWI_MESSAGE)"}'

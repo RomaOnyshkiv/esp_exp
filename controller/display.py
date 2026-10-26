@@ -17,3 +17,4 @@ class Disp:
         self.oled.text(info_to_show, 0, 32)
 
         self.oled.show()
+        return True
